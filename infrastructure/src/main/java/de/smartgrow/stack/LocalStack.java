@@ -6,6 +6,7 @@ import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.rds.*;
+import software.amazon.awscdk.services.route53.CfnHealthCheck;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
@@ -14,11 +15,15 @@ public class LocalStack extends Stack {
         super(scope, id, props);
         this.vpc = createVpc();
 
-        // Create the database for the User Service, mirroring docker-compose.yml
+        DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
+
         DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
 
-        // Create the database for the Auth Service, mirroring docker-compose.yml
-        DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
+        CfnHealthCheck authDbHealthCheck =
+                createDbHealthCheck(authServiceDb, "AuthServiceDBHealthCheck");
+
+        CfnHealthCheck userDbHealthCheck =
+                createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
     }
 
     private Vpc createVpc() {
@@ -42,6 +47,18 @@ public class LocalStack extends Stack {
                 .credentials(Credentials.fromGeneratedSecret("momo"))
                 .databaseName(dbName)
                 .removalPolicy(RemovalPolicy.DESTROY)
+                .build();
+    }
+
+    private CfnHealthCheck createDbHealthCheck(DatabaseInstance db, String id){
+        return CfnHealthCheck.Builder.create(this, id)
+                .healthCheckConfig(CfnHealthCheck.HealthCheckConfigProperty.builder()
+                        .type("TCP")
+                        .port(Token.asNumber(db.getDbInstanceEndpointPort()))
+                        .ipAddress(db.getDbInstanceEndpointAddress())
+                        .requestInterval(30)
+                        .failureThreshold(3)
+                        .build())
                 .build();
     }
 

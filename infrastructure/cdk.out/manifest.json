@@ -150,6 +150,36 @@
             "data": "GreenhouseManagementVPCVPCGW771F721E"
           }
         ],
+        "/LocalStack/AuthServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBSubnetGroupCFE5A552"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBSecurityGroupBE6D28EB"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LocalStackAuthServiceDBSecret0F3CB76B3fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBSecretAttachmentF30406A9"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBC6B688BA"
+          }
+        ],
         "/LocalStack/UserServiceDB/SubnetGroup/Default": [
           {
             "type": "aws:cdk:logicalId",
@@ -180,34 +210,16 @@
             "data": "UserServiceDBD8F231D8"
           }
         ],
-        "/LocalStack/AuthServiceDB/SubnetGroup/Default": [
+        "/LocalStack/AuthServiceDBHealthCheck": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AuthServiceDBSubnetGroupCFE5A552"
+            "data": "AuthServiceDBHealthCheck"
           }
         ],
-        "/LocalStack/AuthServiceDB/SecurityGroup/Resource": [
+        "/LocalStack/UserServiceDBHealthCheck": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AuthServiceDBSecurityGroupBE6D28EB"
-          }
-        ],
-        "/LocalStack/AuthServiceDB/Secret/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "LocalStackAuthServiceDBSecret0F3CB76B3fdaad7efa858a3daf9490cf0a702aeb"
-          }
-        ],
-        "/LocalStack/AuthServiceDB/Secret/Attachment/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AuthServiceDBSecretAttachmentF30406A9"
-          }
-        ],
-        "/LocalStack/AuthServiceDB/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AuthServiceDBC6B688BA"
+            "data": "UserServiceDBHealthCheck"
           }
         ]
       },
