@@ -149,6 +149,66 @@
             "type": "aws:cdk:logicalId",
             "data": "GreenhouseManagementVPCVPCGW771F721E"
           }
+        ],
+        "/LocalStack/UserServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBSubnetGroup458C2A83"
+          }
+        ],
+        "/LocalStack/UserServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBSecurityGroupD7DB68D0"
+          }
+        ],
+        "/LocalStack/UserServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LocalStackUserServiceDBSecret36F905D63fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/LocalStack/UserServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBSecretAttachment614DFF5B"
+          }
+        ],
+        "/LocalStack/UserServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBD8F231D8"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBSubnetGroupCFE5A552"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBSecurityGroupBE6D28EB"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LocalStackAuthServiceDBSecret0F3CB76B3fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBSecretAttachmentF30406A9"
+          }
+        ],
+        "/LocalStack/AuthServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthServiceDBC6B688BA"
+          }
         ]
       },
       "displayName": "LocalStack"
