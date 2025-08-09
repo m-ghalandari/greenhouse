@@ -1,1 +1,395 @@
-{}
+{
+ "Resources": {
+  "GreenhouseManagementVPC2F6C361F": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "GreenhouseManagementVPC"
+     }
+    ]
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet1Subnet7435F58E": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.0.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet1RouteTableDD84F29C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet1RouteTableAssociation74F1FA54": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet1RouteTableDD84F29C"
+    },
+    "SubnetId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet1Subnet7435F58E"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet1DefaultRoute5125A943": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "GreenhouseManagementVPCIGW25271B08"
+    },
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet1RouteTableDD84F29C"
+    }
+   },
+   "DependsOn": [
+    "GreenhouseManagementVPCVPCGW771F721E"
+   ]
+  },
+  "GreenhouseManagementVPCPublicSubnet1EIP60331A50": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet1"
+     }
+    ]
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet1NATGateway48D64DB5": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "GreenhouseManagementVPCPublicSubnet1EIP60331A50",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet1Subnet7435F58E"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "GreenhouseManagementVPCPublicSubnet1DefaultRoute5125A943",
+    "GreenhouseManagementVPCPublicSubnet1RouteTableAssociation74F1FA54"
+   ]
+  },
+  "GreenhouseManagementVPCPublicSubnet2Subnet49C47409": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.64.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet2RouteTable1F4CBCEE": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet2RouteTableAssociation635F62B8": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet2RouteTable1F4CBCEE"
+    },
+    "SubnetId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet2Subnet49C47409"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet2DefaultRoute96BF860E": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "GreenhouseManagementVPCIGW25271B08"
+    },
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet2RouteTable1F4CBCEE"
+    }
+   },
+   "DependsOn": [
+    "GreenhouseManagementVPCVPCGW771F721E"
+   ]
+  },
+  "GreenhouseManagementVPCPublicSubnet2EIP99005BD7": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet2"
+     }
+    ]
+   }
+  },
+  "GreenhouseManagementVPCPublicSubnet2NATGateway61775349": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "GreenhouseManagementVPCPublicSubnet2EIP99005BD7",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet2Subnet49C47409"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PublicSubnet2"
+     }
+    ]
+   },
+   "DependsOn": [
+    "GreenhouseManagementVPCPublicSubnet2DefaultRoute96BF860E",
+    "GreenhouseManagementVPCPublicSubnet2RouteTableAssociation635F62B8"
+   ]
+  },
+  "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.128.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet1RouteTableD6A7AE28": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet1RouteTableAssociation6856BFF8": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPrivateSubnet1RouteTableD6A7AE28"
+    },
+    "SubnetId": {
+     "Ref": "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet1DefaultRoute6E461E76": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet1NATGateway48D64DB5"
+    },
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPrivateSubnet1RouteTableD6A7AE28"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.192.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet2RouteTable93217F43": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "LocalStack/GreenhouseManagementVPC/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet2RouteTableAssociationFC452E41": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPrivateSubnet2RouteTable93217F43"
+    },
+    "SubnetId": {
+     "Ref": "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B"
+    }
+   }
+  },
+  "GreenhouseManagementVPCPrivateSubnet2DefaultRouteE74FFCD8": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "GreenhouseManagementVPCPublicSubnet2NATGateway61775349"
+    },
+    "RouteTableId": {
+     "Ref": "GreenhouseManagementVPCPrivateSubnet2RouteTable93217F43"
+    }
+   }
+  },
+  "GreenhouseManagementVPCIGW25271B08": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "GreenhouseManagementVPC"
+     }
+    ]
+   }
+  },
+  "GreenhouseManagementVPCVPCGW771F721E": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "GreenhouseManagementVPCIGW25271B08"
+    },
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
+  }
+ }
+}

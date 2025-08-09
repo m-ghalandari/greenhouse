@@ -11,6 +11,146 @@
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}"
       },
+      "metadata": {
+        "/LocalStack/GreenhouseManagementVPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPC2F6C361F"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet1Subnet7435F58E"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet1RouteTableDD84F29C"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet1RouteTableAssociation74F1FA54"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet1DefaultRoute5125A943"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet1EIP60331A50"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet1NATGateway48D64DB5"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet2Subnet49C47409"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet2RouteTable1F4CBCEE"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet2RouteTableAssociation635F62B8"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet2DefaultRoute96BF860E"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet2/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet2EIP99005BD7"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PublicSubnet2/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPublicSubnet2NATGateway61775349"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet1RouteTableD6A7AE28"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet1RouteTableAssociation6856BFF8"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet1DefaultRoute6E461E76"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet2RouteTable93217F43"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet2RouteTableAssociationFC452E41"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCPrivateSubnet2DefaultRouteE74FFCD8"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCIGW25271B08"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementVPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementVPCVPCGW771F721E"
+          }
+        ]
+      },
       "displayName": "LocalStack"
     },
     "Tree": {
