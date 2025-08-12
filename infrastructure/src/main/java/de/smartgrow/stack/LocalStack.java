@@ -1,17 +1,18 @@
 package de.smartgrow.stack;
 
-import software.amazon.awscdk.services.ec2.InstanceClass;
-import software.amazon.awscdk.services.ec2.InstanceSize;
-import software.amazon.awscdk.services.ec2.InstanceType;
-import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.*;
+import software.amazon.awscdk.services.ec2.*;
+import software.amazon.awscdk.services.ec2.InstanceType;
+import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.*;
 import software.amazon.awscdk.services.route53.CfnHealthCheck;
+
+import java.util.stream.Collectors;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
 
-    public LocalStack(final App scope, final String id, final StackProps props){
+    public LocalStack(final App scope, final String id, final StackProps props) {
         super(scope, id, props);
         this.vpc = createVpc();
 
@@ -24,6 +25,22 @@ public class LocalStack extends Stack {
 
         CfnHealthCheck userDbHealthCheck =
                 createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
+
+        CfnCluster mskCluster = createMskCluster();
+    }
+
+    public static void main(final String[] args) {
+        App app = new App(AppProps.builder().outdir("./cdk.out").build());
+
+        StackProps props = StackProps.builder()
+                .synthesizer(new BootstraplessSynthesizer())
+                .build();
+
+        new LocalStack(app, "LocalStack", props);
+
+        app.synth();
+
+        System.out.println("App synthesizing in progress...");
     }
 
     private Vpc createVpc() {
@@ -50,7 +67,7 @@ public class LocalStack extends Stack {
                 .build();
     }
 
-    private CfnHealthCheck createDbHealthCheck(DatabaseInstance db, String id){
+    private CfnHealthCheck createDbHealthCheck(DatabaseInstance db, String id) {
         return CfnHealthCheck.Builder.create(this, id)
                 .healthCheckConfig(CfnHealthCheck.HealthCheckConfigProperty.builder()
                         .type("TCP")
@@ -62,17 +79,14 @@ public class LocalStack extends Stack {
                 .build();
     }
 
-    public static void main(final String[] args){
-        App app = new App(AppProps.builder().outdir("./cdk.out").build());
-
-        StackProps props = StackProps.builder()
-                .synthesizer(new BootstraplessSynthesizer())
-                .build();
-
-        new LocalStack(app, "LocalStack", props);
-
-        app.synth();
-
-        System.out.println("App synthesizing in progress...");
+    private CfnCluster createMskCluster() {
+        return CfnCluster.Builder.create(this, "MskCluster")
+                .clusterName("kafka-Cluster")
+                .kafkaVersion("2.8.0")
+                .numberOfBrokerNodes(1)
+                .brokerNodeGroupInfo(CfnCluster.BrokerNodeGroupInfoProperty.builder()
+                        .instanceType("kafka.m5.xlarge")
+                        .clientSubnets(vpc.getPrivateSubnets().stream().map(ISubnet::getSubnetId).collect(Collectors.toList()))
+                        .brokerAzDistribution("DEFAULT").build()).build();
     }
 }
