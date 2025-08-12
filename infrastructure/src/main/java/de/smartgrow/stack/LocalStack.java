@@ -1,8 +1,11 @@
 package de.smartgrow.stack;
 
+
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.ec2.InstanceType;
+import software.amazon.awscdk.services.ecs.CloudMapNamespaceOptions;
+import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.*;
 import software.amazon.awscdk.services.route53.CfnHealthCheck;
@@ -11,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
+    private final Cluster ecsCluster;
 
     public LocalStack(final App scope, final String id, final StackProps props) {
         super(scope, id, props);
@@ -27,6 +31,8 @@ public class LocalStack extends Stack {
                 createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
+
+        this.ecsCluster = createEcsCluster();
     }
 
     public static void main(final String[] args) {
@@ -88,5 +94,14 @@ public class LocalStack extends Stack {
                         .instanceType("kafka.m5.xlarge")
                         .clientSubnets(vpc.getPrivateSubnets().stream().map(ISubnet::getSubnetId).collect(Collectors.toList()))
                         .brokerAzDistribution("DEFAULT").build()).build();
+    }
+
+    private Cluster createEcsCluster() {
+        return Cluster.Builder.create(this, "GreenhouseManagementCluster")
+                .vpc(vpc)
+                .defaultCloudMapNamespace(CloudMapNamespaceOptions.builder()
+                        .name("greenhouse-management.local")
+                        .build())
+                .build();
     }
 }

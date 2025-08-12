@@ -227,6 +227,18 @@
             "type": "aws:cdk:logicalId",
             "data": "MskCluster"
           }
+        ],
+        "/LocalStack/GreenhouseManagementCluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementClusterA2989404"
+          }
+        ],
+        "/LocalStack/GreenhouseManagementCluster/DefaultServiceDiscoveryNamespace/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreenhouseManagementClusterDefaultServiceDiscoveryNamespace0327DC7D"
+          }
         ]
       },
       "displayName": "LocalStack"

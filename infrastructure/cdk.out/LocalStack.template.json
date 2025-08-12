@@ -662,6 +662,18 @@
     "KafkaVersion": "2.8.0",
     "NumberOfBrokerNodes": 1
    }
+  },
+  "GreenhouseManagementClusterA2989404": {
+   "Type": "AWS::ECS::Cluster"
+  },
+  "GreenhouseManagementClusterDefaultServiceDiscoveryNamespace0327DC7D": {
+   "Type": "AWS::ServiceDiscovery::PrivateDnsNamespace",
+   "Properties": {
+    "Name": "greenhouse-management.local",
+    "Vpc": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   }
   }
  }
 }
