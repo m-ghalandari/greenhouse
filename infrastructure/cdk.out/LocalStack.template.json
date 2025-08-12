@@ -674,6 +674,943 @@
      "Ref": "GreenhouseManagementVPC2F6C361F"
     }
    }
+  },
+  "AuthServiceTaskTaskRoleE466B974": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "AuthServiceTask82E6680D": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "JWT_SECRET",
+        "Value": "988ef16e1ee16b45876847af3648b038bba865777541a5ce7e1ceec3a4d194a18f116bd2"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgresql://",
+           {
+            "Fn::GetAtt": [
+             "AuthServiceDBC6B688BA",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "AuthServiceDBC6B688BA",
+             "Endpoint.Port"
+            ]
+           },
+           "/auth-service-db"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "AuthServiceDBSecretAttachmentF30406A9"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "momo"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "auth-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "AuthServiceLogGroup34125B38"
+        },
+        "awslogs-stream-prefix": "auth-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "auth-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 4005,
+        "HostPort": 4005,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "AuthServiceTaskExecutionRoleA1258495",
+      "Arn"
+     ]
+    },
+    "Family": "LocalStackAuthServiceTask8334A88B",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "AuthServiceTaskTaskRoleE466B974",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "AuthServiceTaskExecutionRoleA1258495": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "AuthServiceTaskExecutionRoleDefaultPolicyF20AD0D3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AuthServiceLogGroup34125B38",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AuthServiceTaskExecutionRoleDefaultPolicyF20AD0D3",
+    "Roles": [
+     {
+      "Ref": "AuthServiceTaskExecutionRoleA1258495"
+     }
+    ]
+   }
+  },
+  "AuthServiceLogGroup34125B38": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/auth-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "AuthService3C2B741A": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "GreenhouseManagementClusterA2989404"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "AuthServiceSecurityGroup67F2FA7D",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99"
+       },
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B"
+       }
+      ]
+     }
+    },
+    "ServiceName": "auth-service",
+    "TaskDefinition": {
+     "Ref": "AuthServiceTask82E6680D"
+    }
+   },
+   "DependsOn": [
+    "AuthServiceDBC6B688BA",
+    "AuthServiceDBSecretAttachmentF30406A9",
+    "LocalStackAuthServiceDBSecret0F3CB76B3fdaad7efa858a3daf9490cf0a702aeb",
+    "AuthServiceDBSecurityGroupBE6D28EB",
+    "AuthServiceDBSubnetGroupCFE5A552",
+    "AuthServiceDBHealthCheck",
+    "AuthServiceTaskTaskRoleE466B974"
+   ]
+  },
+  "AuthServiceSecurityGroup67F2FA7D": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "LocalStack/AuthService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   },
+   "DependsOn": [
+    "AuthServiceDBC6B688BA",
+    "AuthServiceDBSecretAttachmentF30406A9",
+    "LocalStackAuthServiceDBSecret0F3CB76B3fdaad7efa858a3daf9490cf0a702aeb",
+    "AuthServiceDBSecurityGroupBE6D28EB",
+    "AuthServiceDBSubnetGroupCFE5A552",
+    "AuthServiceDBHealthCheck",
+    "AuthServiceTaskTaskRoleE466B974"
+   ]
+  },
+  "BillingServiceTaskTaskRole7A547BBF": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "BillingServiceTask30D9C66E": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "billing-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "BillingServiceLogGroupDD61E740"
+        },
+        "awslogs-stream-prefix": "billing-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "billing-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 4001,
+        "HostPort": 4001,
+        "Protocol": "tcp"
+       },
+       {
+        "ContainerPort": 9001,
+        "HostPort": 9001,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "BillingServiceTaskExecutionRole11FE8DE2",
+      "Arn"
+     ]
+    },
+    "Family": "LocalStackBillingServiceTask944089D5",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "BillingServiceTaskTaskRole7A547BBF",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "BillingServiceTaskExecutionRole11FE8DE2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "BillingServiceTaskExecutionRoleDefaultPolicy4F4033C9": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BillingServiceLogGroupDD61E740",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BillingServiceTaskExecutionRoleDefaultPolicy4F4033C9",
+    "Roles": [
+     {
+      "Ref": "BillingServiceTaskExecutionRole11FE8DE2"
+     }
+    ]
+   }
+  },
+  "BillingServiceLogGroupDD61E740": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/billing-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "BillingServiceFEB36D90": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "GreenhouseManagementClusterA2989404"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "BillingServiceSecurityGroup3783AD35",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99"
+       },
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B"
+       }
+      ]
+     }
+    },
+    "ServiceName": "billing-service",
+    "TaskDefinition": {
+     "Ref": "BillingServiceTask30D9C66E"
+    }
+   },
+   "DependsOn": [
+    "BillingServiceTaskTaskRole7A547BBF"
+   ]
+  },
+  "BillingServiceSecurityGroup3783AD35": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "LocalStack/BillingService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   },
+   "DependsOn": [
+    "BillingServiceTaskTaskRole7A547BBF"
+   ]
+  },
+  "AnalyticsServiceTaskTaskRole1ABB10CB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "AnalyticsServiceTaskC3AFBC47": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "analytics-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "AnalyticsServiceLogGroupBD82F12A"
+        },
+        "awslogs-stream-prefix": "analytics-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "analytics-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 4002,
+        "HostPort": 4002,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "AnalyticsServiceTaskExecutionRoleBAF654B2",
+      "Arn"
+     ]
+    },
+    "Family": "LocalStackAnalyticsServiceTask8482E2AF",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "AnalyticsServiceTaskTaskRole1ABB10CB",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "AnalyticsServiceTaskExecutionRoleBAF654B2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "AnalyticsServiceTaskExecutionRoleDefaultPolicy99868928": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AnalyticsServiceLogGroupBD82F12A",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AnalyticsServiceTaskExecutionRoleDefaultPolicy99868928",
+    "Roles": [
+     {
+      "Ref": "AnalyticsServiceTaskExecutionRoleBAF654B2"
+     }
+    ]
+   }
+  },
+  "AnalyticsServiceLogGroupBD82F12A": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/analytics-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "AnalyticsServiceCD38C492": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "GreenhouseManagementClusterA2989404"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "AnalyticsServiceSecurityGroupBA6AE98A",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99"
+       },
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B"
+       }
+      ]
+     }
+    },
+    "ServiceName": "analytics-service",
+    "TaskDefinition": {
+     "Ref": "AnalyticsServiceTaskC3AFBC47"
+    }
+   },
+   "DependsOn": [
+    "AnalyticsServiceTaskTaskRole1ABB10CB",
+    "MskCluster"
+   ]
+  },
+  "AnalyticsServiceSecurityGroupBA6AE98A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "LocalStack/AnalyticsService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   },
+   "DependsOn": [
+    "AnalyticsServiceTaskTaskRole1ABB10CB",
+    "MskCluster"
+   ]
+  },
+  "UserServiceTaskTaskRole3959F240": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "UserServiceTaskCE24C7B8": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "BILLING_SERVICE_GRPC_PORT",
+        "Value": "9001"
+       },
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgresql://",
+           {
+            "Fn::GetAtt": [
+             "UserServiceDBD8F231D8",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "UserServiceDBD8F231D8",
+             "Endpoint.Port"
+            ]
+           },
+           "/user-service-db"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "UserServiceDBSecretAttachment614DFF5B"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "momo"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       },
+       {
+        "Name": "BILLING_SERVICE_ADDRESS",
+        "Value": "host.docker.internal"
+       }
+      ],
+      "Essential": true,
+      "Image": "user-service",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "UserServiceLogGroupF8D8E736"
+        },
+        "awslogs-stream-prefix": "user-service",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "user-serviceContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 4000,
+        "HostPort": 4000,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "UserServiceTaskExecutionRole35E26DAF",
+      "Arn"
+     ]
+    },
+    "Family": "LocalStackUserServiceTask52655B39",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "UserServiceTaskTaskRole3959F240",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "UserServiceTaskExecutionRole35E26DAF": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "UserServiceTaskExecutionRoleDefaultPolicyFED51482": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "UserServiceLogGroupF8D8E736",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UserServiceTaskExecutionRoleDefaultPolicyFED51482",
+    "Roles": [
+     {
+      "Ref": "UserServiceTaskExecutionRole35E26DAF"
+     }
+    ]
+   }
+  },
+  "UserServiceLogGroupF8D8E736": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/user-service",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "UserServiceDFC9364A": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "GreenhouseManagementClusterA2989404"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "UserServiceSecurityGroupF7F8526C",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet1SubnetBCBBFC99"
+       },
+       {
+        "Ref": "GreenhouseManagementVPCPrivateSubnet2Subnet65D6CE4B"
+       }
+      ]
+     }
+    },
+    "ServiceName": "user-service",
+    "TaskDefinition": {
+     "Ref": "UserServiceTaskCE24C7B8"
+    }
+   },
+   "DependsOn": [
+    "BillingServiceSecurityGroup3783AD35",
+    "BillingServiceFEB36D90",
+    "MskCluster",
+    "UserServiceDBD8F231D8",
+    "UserServiceDBSecretAttachment614DFF5B",
+    "LocalStackUserServiceDBSecret36F905D63fdaad7efa858a3daf9490cf0a702aeb",
+    "UserServiceDBSecurityGroupD7DB68D0",
+    "UserServiceDBSubnetGroup458C2A83",
+    "UserServiceDBHealthCheck",
+    "UserServiceTaskTaskRole3959F240"
+   ]
+  },
+  "UserServiceSecurityGroupF7F8526C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "LocalStack/UserService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "GreenhouseManagementVPC2F6C361F"
+    }
+   },
+   "DependsOn": [
+    "BillingServiceSecurityGroup3783AD35",
+    "BillingServiceFEB36D90",
+    "MskCluster",
+    "UserServiceDBD8F231D8",
+    "UserServiceDBSecretAttachment614DFF5B",
+    "LocalStackUserServiceDBSecret36F905D63fdaad7efa858a3daf9490cf0a702aeb",
+    "UserServiceDBSecurityGroupD7DB68D0",
+    "UserServiceDBSubnetGroup458C2A83",
+    "UserServiceDBHealthCheck",
+    "UserServiceTaskTaskRole3959F240"
+   ]
   }
  }
 }
