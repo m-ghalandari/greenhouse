@@ -185,7 +185,7 @@ public class LocalStack extends Stack {
         }
 
         if (db != null) {
-            envVars.put("SPRING_DATASOURCE_URL", "jdbc:postgresql://%s:%s/%s-db".formatted(db.getDbInstanceEndpointAddress(), db.getDbInstanceEndpointPort(), imageName));
+            envVars.put("SPRING_DATASOURCE_URL", "jdbc:postgresql://%s:%s/%s".formatted(db.getDbInstanceEndpointAddress(), db.getDbInstanceEndpointPort(), imageName));
             envVars.put("SPRING_DATASOURCE_USERNAME", "momo");
             envVars.put("SPRING_DATASOURCE_PASSWORD", db.getSecret().secretValueFromJson("password").toString());
             envVars.put("SPRING_JPA_HIBERNATE_DDL_AUTO", "update");
