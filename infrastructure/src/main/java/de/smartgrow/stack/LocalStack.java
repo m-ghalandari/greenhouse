@@ -103,7 +103,7 @@ public class LocalStack extends Stack {
         return Vpc.Builder
                 .create(this, "GreenhouseManagementVPC")
                 .vpcName("GreenhouseManagementVPC")
-                .maxAzs(2)
+                .maxAzs(1)
                 .build();
 
     }
